@@ -1,38 +1,33 @@
 #include "Menu.h"
 
-MenuItem exampleItem1 = MenuItem("example1", testAddress1);
-MenuItem exampleItem2 = MenuItem("example2", testAddress2);
-MenuItem exampleItem3 = MenuItem("example3", testAddress3);
-MenuItem items[] = {exampleItem1, exampleItem2, exampleItem3};
+constexpr uint16_t KP_ADDRESS = 1;
+constexpr uint16_t KD_ADDRESS = 2;
+constexpr uint16_t MOTOR_SPEED_ADDRESS = 3;
+
+constexpr uint8_t MENU_ADUST_KNOB = 6;
+constexpr uint8_t VALUE_ADJUST_KNOB = 7;
+
+
+MenuItem KP = MenuItem("KP", KP_ADDRESS);
+MenuItem KD = MenuItem("KD", KD_ADDRESS);
+MenuItem SPEED = MenuItem("SPEED", MOTOR_SPEED_ADDRESS);
+
+MenuItem items[] = {KP, KD, SPEED};
 int itemCount = 3;
 
-// void displayMenu(void)
-// {
-//     int knobValue = knob(VALUE_ADJUST_KNOB);
-//     int selectedItem = knob(MENU_ADJUST_KNOB) / (1024 / itemCount - 1);
-//     if (selectedItem > itemCount - 1) { selectedItem = itemCount - 1; }
 
-//     LCD.clear(); LCD.home();
-//     LCD.print(items[selectedItem].getName() + " ");
-//     LCD.print(items[selectedItem].getValue());
-//     LCD.setCursor(0, 1);
+uint8_t getMenuItemValue(uint8_t index) {
+  return items[index].getValue();
+}
 
-//     LCD.print("Set to "); LCD.print(knobValue); LCD.print("?");
-
-//     if (StopButton(200)) { items[selectedItem].setValue(knobValue); }
-//     delay(50);
-// }
-
-void displayMenu(void)
-{
+void displayMenu(void) {
   LCD.clear();
   LCD.home();
   LCD.print("Displaying Menu");
   delay(500);
 
-  while (true)
-  {
-    int menuIndex = knob(menuAdjustKnob) * (itemCount) / 1024;
+  while (true) {
+    int menuIndex = knob(MENU_ADUST_KNOB) * (itemCount) / 1024;
     LCD.clear();
     LCD.home();
     LCD.print(items[menuIndex].getName() + " ");
@@ -40,26 +35,23 @@ void displayMenu(void)
     LCD.setCursor(0, 1);
 
     LCD.print("Set to ");
-    LCD.print(knob(valueAdjustKnob));
+    LCD.print(knob(VALUE_ADJUST_KNOB));
     LCD.print("?");
 
     /* Press start button to save the new value */
-    if (startbutton())
-    {
+    if (startbutton()) {
       delay(100);
-      if (startbutton())
-      {
-        items[menuIndex].setValue(knob(valueAdjustKnob));
+      
+      if (startbutton()) {
+        items[menuIndex].setValue(knob(VALUE_ADJUST_KNOB));
         delay(250);
       }
     }
 
     /* Press stop button to exit menu */
-    if (stopbutton())
-    {
+    if (stopbutton()) {
       delay(100);
-      if (stopbutton())
-      {
+      if (stopbutton()) {
         LCD.clear();
         LCD.home();
         LCD.print("Leaving menu");
