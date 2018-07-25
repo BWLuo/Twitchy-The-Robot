@@ -1,9 +1,9 @@
 #include "EdgeDetector.h"
 
-constexpr uint8_t RIGHT_EDGE_SENSOR = 0;
+constexpr uint8_t RIGHT_EDGE_SENSOR = 5;
 constexpr uint8_t LEFT_EDGE_SENSOR = 0;
 
-constexpr uint16_t THRESHOLD = 0;
+constexpr uint16_t THRESHOLD = 400;
 
 uint16_t readLeftEdgeSensor(void) {
   return analogRead(LEFT_EDGE_SENSOR);

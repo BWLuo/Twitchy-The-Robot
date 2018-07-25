@@ -4,7 +4,8 @@
 #include <phys253.h>
 #include "Menu.h"
 
-void intializeMotors(void);
+void initializeMotors(void);
+void stopMotors(void);
 void adjustDirection(void);
 
 #endif

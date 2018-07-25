@@ -14,7 +14,7 @@ MenuItem SPEED = MenuItem("SPEED", MOTOR_SPEED_ADDRESS);
 
 MenuItem items[] = {KP, KD, SPEED};
 int itemCount = 3;
-
+volatile int menuIndex = 0;
 
 uint8_t getMenuItemValue(uint8_t index) {
   return items[index].getValue();
@@ -27,7 +27,7 @@ void displayMenu(void) {
   delay(500);
 
   while (true) {
-    int menuIndex = knob(MENU_ADUST_KNOB) * (itemCount) / 1024;
+    menuIndex = knob(MENU_ADUST_KNOB) * (itemCount) / 1024;
     LCD.clear();
     LCD.home();
     LCD.print(items[menuIndex].getName() + " ");
@@ -35,7 +35,7 @@ void displayMenu(void) {
     LCD.setCursor(0, 1);
 
     LCD.print("Set to ");
-    LCD.print(knob(VALUE_ADJUST_KNOB));
+    LCD.print((knob(VALUE_ADJUST_KNOB)));
     LCD.print("?");
 
     /* Press start button to save the new value */

@@ -2,11 +2,11 @@
 
 constexpr int RIGHT_MOTOR = 0;
 constexpr int LEFT_MOTOR = 1;
-constexpr int THRESHOLD = 185;
-constexpr int OUTER_LEFT_SENSOR = 2;
-constexpr int INNER_LEFT_SENSOR = 3;
-constexpr int INNER_RIGHT_SENSOR = 4;
-constexpr int OUTER_RIGHT_SENSOR = 5;
+constexpr int THRESHOLD = 220;
+constexpr int OUTER_LEFT_SENSOR = 1;
+constexpr int INNER_LEFT_SENSOR = 2;
+constexpr int INNER_RIGHT_SENSOR = 3;
+constexpr int OUTER_RIGHT_SENSOR = 4;
 
 volatile int innerLeftSensorReadout = 0;
 volatile int outerLeftSensorReadout = 0;
@@ -27,12 +27,17 @@ volatile int error = 0;
 volatile int lasterr = 0;
 
 void initializeMotors(void) {
-  kp = getMenuItemValue(0);
-  kd = getMenuItemValue(1);
+  kp = -1 * getMenuItemValue(0);
+  kd = -1 * getMenuItemValue(1);
   leftMotorSpeed = -1 * getMenuItemValue(2);
   rightMotorSpeed = -1 * getMenuItemValue(2);
   motor.speed(LEFT_MOTOR, leftMotorSpeed);
   motor.speed(RIGHT_MOTOR, rightMotorSpeed);
+}
+
+void stopMotors(void) {
+  motor.speed(LEFT_MOTOR, 0);
+  motor.speed(RIGHT_MOTOR, 0);
 }
 
 void adjustDirection(void) {
