@@ -125,8 +125,10 @@ void lowerRoutine(void) {
   motor.speed(RIGHT_MOTOR, 80);
   delay(2000);
   motor.speed(2,0);
-  delay(2000);
+  delay(1000);
   stopMotors();
+  motor.speed(LEFT_MOTOR, 100);
+  delay(1500);
   
 }
 
