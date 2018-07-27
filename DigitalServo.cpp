@@ -167,3 +167,9 @@ void dropSecondBridge(void) {
   delay(2000);
 }
 
+void initializeBridge(void) {
+  rightArm.write(70);
+  leftArm.write(100);
+  delay(MOVEMENT_DELAY_MS);
+}
+

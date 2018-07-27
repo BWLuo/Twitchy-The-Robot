@@ -40,7 +40,7 @@ void loop() {
   stopMotors();
   pickUpRightSide();
 
-  unsigned long clawOpenTime = millis() + 5000;
+  unsigned long clawOpenTime = millis() + 6000;
   do {
     adjustDirection();
   } while (millis() < clawOpenTime);
@@ -49,12 +49,25 @@ void loop() {
   while(true) {
     adjustDirection();
     if(isAtEdge()) {
-      stopMotors; 
+      stopMotors;
+      bounce();
       pickUpLeftSide();
       break;
     }
   }
+  
+  reverseRoutine();
+  initializeBridge();
+  unsigned long lowerTimer = millis() + 5000;
+  startLift();
+  delay(2000);
+  do {
+    adjustDirection();
+  } while( millis() < lowerTimer);
 
+  stopMotors();
+  lowerRoutine();
+  
   while(true) {
     delay(10000);
   }

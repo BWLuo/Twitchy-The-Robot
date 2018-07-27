@@ -92,3 +92,49 @@ void crossBridge(void) {
 //  motor.speed(LEFT_MOTOR,0);
 }
 
+void reverseRoutine(void) {
+  motor.speed(RIGHT_MOTOR, 100);
+  motor.speed(LEFT_MOTOR, 100);
+  delay(1000);
+  stopMotors();
+  delay(500);
+  motor.speed(RIGHT_MOTOR, 100);
+  motor.speed(LEFT_MOTOR, -100);
+  delay(500);
+  while(true) {
+    if(analogRead(INNER_RIGHT_SENSOR) > THRESHOLD || analogRead(INNER_LEFT_SENSOR) > THRESHOLD || analogRead(OUTER_LEFT_SENSOR) > THRESHOLD ||  analogRead(OUTER_RIGHT_SENSOR) > THRESHOLD){
+      stopMotors();
+      break;
+    }
+  }  
+}
+
+void startLift(void) {
+  motor.speed(2, -255);
+}
+
+void lowerRoutine(void) {
+  motor.speed(RIGHT_MOTOR, 0);
+  motor.speed(LEFT_MOTOR, -200);
+  delay(1000);
+  motor.speed(LEFT_MOTOR,0);
+  
+  motor.speed(2,255);
+  delay(1000);
+  motor.speed(LEFT_MOTOR,80);
+  motor.speed(RIGHT_MOTOR, 80);
+  delay(2000);
+  motor.speed(2,0);
+  delay(2000);
+  stopMotors();
+  
+}
+
+void bounce(void) {
+  motor.speed(RIGHT_MOTOR, 100);
+  motor.speed(LEFT_MOTOR, 100);
+  delay(100);
+  motor.speed(RIGHT_MOTOR, 0);
+  motor.speed(LEFT_MOTOR, 0);
+}
+

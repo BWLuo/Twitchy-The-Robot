@@ -10,4 +10,7 @@ void adjustDirection(void);
 void crossBridge(void);
 
 void straightScan(void);
+void reverseRoutine(void);
+void lowerRoutine(void);
+void bounce(void);
 #endif

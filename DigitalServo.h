@@ -15,4 +15,6 @@ void pickUpLeftSide(void);
 void dropFirstBridge(void);
 void dropSecondBridge(void);
 
+void startLift(void);
+void initializeBridge(void);
 #endif 
