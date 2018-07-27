@@ -1,18 +1,18 @@
 #ifndef DIGITALSERVO_H
 #define DIGITALSERVO_H
 
-#include <ServoTINAH.h>
+#include <phys253.h>
 
 void initializeServos(void);
 
-void liftLeftArm(void);
-void lowerLeftArm(void);
-
 void initializeRightClaw(void);
+void initializeRightClaw2(void);
 void pickUpRightSide(void);
+
+void initializeLeftClaw(void);
+void pickUpLeftSide(void);
+
 void dropFirstBridge(void);
 void dropSecondBridge(void);
 
-void changeArm(int angle);
-void changeClaw(int angle);
 #endif 

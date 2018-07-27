@@ -1,7 +1,7 @@
 #include "EdgeDetector.h"
 
-constexpr uint8_t RIGHT_EDGE_SENSOR = 5;
 constexpr uint8_t LEFT_EDGE_SENSOR = 0;
+constexpr uint8_t RIGHT_EDGE_SENSOR = 5;
 
 constexpr uint16_t THRESHOLD = 400;
 

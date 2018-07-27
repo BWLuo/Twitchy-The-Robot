@@ -3,25 +3,54 @@
 #include "LineFollower.h"
 #include "DigitalServo.h"
 #include "EdgeDetector.h"
-
-volatile int knob6 = 0;
-volatile int knob7 = 0;
+#include "Test.h"
 
 void setup() {
   LCD.begin(16,2);
+//  while(true) {
+//    testSensors();
+//  }
   displayMenu();
   initializeServos();
   initializeMotors();
-  initializeRightClaw();
 }
+
 void loop() {
-//   put your main code here, to run repeatedly:
-  
+
+  // first section until bridge
+  initializeRightClaw();
   while(true) {
     adjustDirection();
     if(isAtEdge()) {
       stopMotors();
       pickUpRightSide();
+      dropFirstBridge();
+      break;
+    }
+  }
+
+  unsigned long clawCloseTime = millis() + 4200;
+//  crossBridge();
+  straightScan();
+  initializeRightClaw2();
+  do {
+    adjustDirection();
+  } while (millis() < clawCloseTime);
+
+  stopMotors();
+  pickUpRightSide();
+
+  unsigned long clawOpenTime = millis() + 5000;
+  do {
+    adjustDirection();
+  } while (millis() < clawOpenTime);
+  stopMotors();
+  initializeLeftClaw();
+  while(true) {
+    adjustDirection();
+    if(isAtEdge()) {
+      stopMotors; 
+      pickUpLeftSide();
       break;
     }
   }
@@ -30,8 +59,6 @@ void loop() {
     delay(10000);
   }
 
-//  LCD.clear();
-//  LCD.home();
-//  LCD.print(readLeftEdgeSensor()); LCD.print("  "); LCD.print(readRightEdgeSensor());
-//  delay(100);
+//testSensors();
+//delay(500);
 }

@@ -2,11 +2,14 @@
 
 constexpr int RIGHT_MOTOR = 0;
 constexpr int LEFT_MOTOR = 1;
-constexpr int THRESHOLD = 220;
+
 constexpr int OUTER_LEFT_SENSOR = 1;
 constexpr int INNER_LEFT_SENSOR = 2;
 constexpr int INNER_RIGHT_SENSOR = 3;
 constexpr int OUTER_RIGHT_SENSOR = 4;
+
+constexpr int THRESHOLD = 250;
+
 
 volatile int innerLeftSensorReadout = 0;
 volatile int outerLeftSensorReadout = 0;
@@ -26,13 +29,13 @@ volatile int deviation = 0;
 volatile int error = 0;
 volatile int lasterr = 0;
 
+
+
 void initializeMotors(void) {
   kp = -1 * getMenuItemValue(0);
   kd = -1 * getMenuItemValue(1);
   leftMotorSpeed = -1 * getMenuItemValue(2);
   rightMotorSpeed = -1 * getMenuItemValue(2);
-  motor.speed(LEFT_MOTOR, leftMotorSpeed);
-  motor.speed(RIGHT_MOTOR, rightMotorSpeed);
 }
 
 void stopMotors(void) {
@@ -49,7 +52,7 @@ void adjustDirection(void) {
   deviation = innerRightSensorReadout - innerLeftSensorReadout + outerLeftSensorReadout - outerRightSensorReadout ;
 
   // Case when all sensors are off tape
-  if (deviation == 0) {
+  if (innerLeftSensorReadout == 1 && innerRightSensorReadout == 1 && outerLeftSensorReadout == 0 && outerRightSensorReadout == 0) {
     deviation = (lasterr < 0) ? -5 : 5;
   }
 
@@ -64,5 +67,28 @@ void adjustDirection(void) {
   // Feedback into motor
   motor.speed(LEFT_MOTOR, leftMotorSpeed - g);
   motor.speed(RIGHT_MOTOR, rightMotorSpeed + g);
+}
+
+void straightScan(void) {
+  motor.speed(LEFT_MOTOR, leftMotorSpeed);
+  motor.speed(RIGHT_MOTOR, rightMotorSpeed);
+  while(true) {
+    if(analogRead(INNER_RIGHT_SENSOR) > THRESHOLD || analogRead(INNER_LEFT_SENSOR) > THRESHOLD || analogRead(OUTER_LEFT_SENSOR) > THRESHOLD ||  analogRead(OUTER_RIGHT_SENSOR) > THRESHOLD){
+      delay(30);
+      if(analogRead(INNER_RIGHT_SENSOR) > THRESHOLD || analogRead(INNER_LEFT_SENSOR) > THRESHOLD || analogRead(OUTER_LEFT_SENSOR) > THRESHOLD ||  analogRead(OUTER_RIGHT_SENSOR) > THRESHOLD){
+        break;
+      }
+    }
+    
+  }
+  return;
+}
+
+void crossBridge(void) {
+  motor.speed(RIGHT_MOTOR,-100);
+  motor.speed(LEFT_MOTOR,-100);
+  delay(2000);
+//  motor.speed(RIGHT_MOTOR,0);
+//  motor.speed(LEFT_MOTOR,0);
 }
 
