@@ -7,4 +7,5 @@
 bool isLeftAtEdge(void);
 bool isRightAtEdge(void);
 bool isAtEdge(void);
+
 #endif
