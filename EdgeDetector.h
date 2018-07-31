@@ -2,8 +2,9 @@
 #define EDGEDETECTOR_H
 
 #include <phys253.h>
+#include "Ports.h"
 
-uint16_t readLeftEdgeSensor(void);
-uint16_t readRightEdgeSensor(void);
+bool isLeftAtEdge(void);
+bool isRightAtEdge(void);
 bool isAtEdge(void);
 #endif

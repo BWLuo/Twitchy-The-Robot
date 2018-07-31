@@ -2,11 +2,11 @@
 #define DIGITALSERVO_H
 
 #include <phys253.h>
+#include "Ports.h"
 
 void initializeServos(void);
 
 void initializeRightClaw(void);
-void initializeRightClaw2(void);
 void pickUpRightSide(void);
 
 void initializeLeftClaw(void);

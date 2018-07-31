@@ -1,13 +1,5 @@
 #include "DigitalServo.h"
 
-// servo ports on TINAH
-constexpr uint8_t LEFT_ARM_SERVO =         13;
-constexpr uint8_t LEFT_CLAW_SERVO =        14;
-constexpr uint8_t RIGHT_ARM_SERVO =        12;
-constexpr uint8_t RIGHT_CLAW_SERVO =       11;
-constexpr uint8_t LEFT_BRIDGE_SERVO =      15;
-constexpr uint8_t RIGHT_BRIDGE_SERVO =     10;
-
 // servo angles for robot arms
 constexpr uint16_t DEFAULT_LEFT_ARM_SERVO_ANGLE =       80;
 //constexpr uint16_t RAISED_LEFT_ARM_SERVO_ANGLE =        45;
@@ -46,8 +38,6 @@ ServoTINAH rightClaw;
 ServoTINAH leftBridge;
 ServoTINAH rightBridge;
 
-
-
 void initializeServos(void) {
   leftArm.attach(LEFT_ARM_SERVO);
   leftClaw.attach(LEFT_CLAW_SERVO);
@@ -65,25 +55,9 @@ void initializeServos(void) {
   delay(MOVEMENT_DELAY_MS);
 }
 
-void deinitializeServos(void) {
-  leftArm.detach();
-  leftClaw.detach();
-  rightArm.detach();
-  rightClaw.detach();
-  leftBridge.detach();
-  rightBridge.detach();
-}
-
-
 // initialization routines setting up claw to pick up objects
 void initializeRightClaw(void) {
   rightArm.write(LOWERED_RIGHT_ARM_SERVO_ANGLE);
-  delay(MOVEMENT_DELAY_MS);
-  rightClaw.write(OPEN_RIGHT_CLAW_SERVO_ANGLE);
-}
-
-void initializeRightClaw2(void) {
-  rightArm.write(1);
   delay(MOVEMENT_DELAY_MS);
   rightClaw.write(OPEN_RIGHT_CLAW_SERVO_ANGLE);
 }
@@ -165,11 +139,5 @@ void dropSecondBridge(void) {
   leftBridge.write(BRIDGE2_LEFT_BRIDGE_SERVO_ANGLE);
   rightBridge.write(BRIDGE2_RIGHT_BRIDGE_SERVO_ANGLE);
   delay(2000);
-}
-
-void initializeBridge(void) {
-  rightArm.write(70);
-  leftArm.write(100);
-  delay(MOVEMENT_DELAY_MS);
 }
 

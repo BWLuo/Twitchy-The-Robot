@@ -7,9 +7,6 @@
 
 void setup() {
   LCD.begin(16,2);
-//  while(true) {
-//    testSensors();
-//  }
   displayMenu();
   initializeServos();
   initializeMotors();
@@ -32,7 +29,7 @@ void loop() {
   unsigned long clawCloseTime = millis() + 4200;
 //  crossBridge();
   straightScan();
-  initializeRightClaw2();
+  initializeRightClaw();
   do {
     adjustDirection();
   } while (millis() < clawCloseTime);
@@ -57,7 +54,6 @@ void loop() {
   }
   
   reverseRoutine();
-  initializeBridge();
   unsigned long lowerTimer = millis() + 5000;
   startLift();
   delay(2000);

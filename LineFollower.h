@@ -3,11 +3,11 @@
 
 #include <phys253.h>
 #include "Menu.h"
+#include "Ports.h"
 
 void initializeMotors(void);
 void stopMotors(void);
 void adjustDirection(void);
-void crossBridge(void);
 
 void straightScan(void);
 void reverseRoutine(void);
