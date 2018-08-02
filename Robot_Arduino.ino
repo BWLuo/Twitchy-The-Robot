@@ -4,10 +4,18 @@
 #include "DigitalServo.h"
 #include "EdgeDetector.h"
 #include "Test.h"
+#include "EncoderInterrupts.h"
+#include "EncoderFunctions.h"
+#include "filter.h"
 
 void setup() {
-  LCD.begin(16,2);
-  displayMenu();
+  LCD.begin(16, 2);
+  //  while(true) {
+  //    testIRSensor();
+  //      delay(500);
+
+  enableEncoderInterrupts();
+//  displayMenu();
   initializeServos();
   initializeMotors();
 }
@@ -15,10 +23,13 @@ void setup() {
 void loop() {
 
   // first section until bridge
+//  trackDistance(1300);
+  trackDistance(300);
   initializeRightClaw();
-  while(true) {
-    adjustDirection();
-    if(isAtEdge()) {
+  trackDistance(1000);
+  while (true) {
+    adjustDirection2(80);
+    if (isAtEdge()) {
       stopMotors();
       pickUpRightSide();
       dropFirstBridge();
@@ -26,48 +37,106 @@ void loop() {
     }
   }
 
-  unsigned long clawCloseTime = millis() + 4200;
-//  crossBridge();
-  straightScan();
-  initializeRightClaw();
-  do {
-    adjustDirection();
-  } while (millis() < clawCloseTime);
-
-  stopMotors();
+  rightScan();
+  initializeRightClaw2();
+  trackDistance(340);
+//  moveStraight(100, 1, 15);
+//  rotateLMotorAngle(110, 1, 10);
   pickUpRightSide();
-
-  unsigned long clawOpenTime = millis() + 6000;
-  do {
-    adjustDirection();
-  } while (millis() < clawOpenTime);
-  stopMotors();
-  initializeLeftClaw();
-  while(true) {
-    adjustDirection();
-    if(isAtEdge()) {
-      stopMotors;
-      bounce();
-      pickUpLeftSide();
-      break;
-    }
-  }
+//  moveStraight(100, -1, 50);
+//  rotateRMotorAngle(120, -1, 20);
+//  moveStraight(100, 1, 100);
+//  LeftScan();
   
-  reverseRoutine();
-  unsigned long lowerTimer = millis() + 5000;
-  startLift();
-  delay(2000);
-  do {
-    adjustDirection();
-  } while( millis() < lowerTimer);
 
-  stopMotors();
-  lowerRoutine();
+//  // IR detection block
+//  if (detect_10khz(0) > 250) {
+//    while (true) {
+//      delay(500);
+//      if (detect_1khz(0) > 250) {
+//        break;
+//      }
+//    }
+//    while (true) {
+//      delay(500);
+//      if (detect_10khz(0) > 250) {
+//        break;
+//      }
+//    }
+//  } else if (detect_1khz(0) > 250) {
+//    while (true) {
+//      delay(500);
+//      if (detect_10khz(0) > 250) {
+//        break;
+//      }
+//    }
+//  }
+//  
+//  trackDistance(1350);
+//  initializeLeftClaw();
+//  while (true) {
+//    adjustDirection();
+//    if (isAtEdge()) {
+//      stopMotors;
+//      bounce();
+//      break;
+//    }
+//  }
+//  moveStraight(100, -1, 75);
+//  pickUpLeftSide();
+//  rotateRMotorAngle(120, -1, 60);
+//  moveStraightUntilEdge(100);
+//  dropSecondBridge();
+
+
   
-  while(true) {
+  //  while (true) {
+  //    adjustDirection();
+  //    if (isAtEdge()) {
+  //      stopMotors;
+  //      bounce();
+  //      pickUpLeftSide();
+  //      break;
+  //    }
+  //  }
+  //  do {
+  //    adjustDirection();
+  //  } while (millis() < clawCloseTime);
+  //
+  //  stopMotors();
+  //  pickUpRightSide();
+  //
+  //  unsigned long clawOpenTime = millis() + 6000;
+  //  do {
+  //    adjustDirection();
+  //  } while (millis() < clawOpenTime);
+  //  stopMotors();
+  //  initializeLeftClaw();
+  //  while(true) {
+  //    adjustDirection();
+  //    if(isAtEdge()) {
+  //      stopMotors;
+  //      bounce();
+  //      pickUpLeftSide();
+  //      break;
+  //    }
+  //  }
+  //
+  //  reverseRoutine();
+  //  unsigned long lowerTimer = millis() + 5000;
+  //  startLift();
+  //  delay(2000);
+  //  do {
+  //    adjustDirection();
+  //  } while( millis() < lowerTimer);
+  //
+  //  stopMotors();
+  //  lowerRoutine();
+  //
+  while (true) {
     delay(10000);
   }
 
-//testSensors();
-//delay(500);
+  //testSensors();
+  //delay(500);
 }

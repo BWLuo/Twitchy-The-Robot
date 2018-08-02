@@ -37,7 +37,7 @@ void displayMenu(void) {
     LCD.setCursor(0, 1);
 
     LCD.print("Set to ");
-    LCD.print((knob(VALUE_ADJUST_KNOB)));
+    LCD.print((knob(VALUE_ADJUST_KNOB))/4);
     LCD.print("?");
 
     /* Press start button to save the new value */
@@ -45,7 +45,7 @@ void displayMenu(void) {
       delay(100);
       
       if (startbutton()) {
-        items[menuIndex].setValue(knob(VALUE_ADJUST_KNOB));
+        items[menuIndex].setValue(knob(VALUE_ADJUST_KNOB)/4);
         delay(250);
       }
     }

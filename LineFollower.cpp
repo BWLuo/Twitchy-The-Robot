@@ -60,6 +60,42 @@ void adjustDirection(void) {
   motor.speed(RIGHT_MOTOR, rightMotorSpeed + g);
 }
 
+void adjustDirection2(uint8_t velocity) {
+  innerLeftSensorReadout = (analogRead(INNER_LEFT_SENSOR) > THRESHOLD) ? 0 : 1;
+  innerRightSensorReadout = (analogRead(INNER_RIGHT_SENSOR) > THRESHOLD) ? 0 : 1;
+  outerLeftSensorReadout = (analogRead(OUTER_LEFT_SENSOR) < THRESHOLD) ? 0 : 3;
+  outerRightSensorReadout = (analogRead(OUTER_RIGHT_SENSOR) < THRESHOLD) ? 0 : 3;
+
+  deviation = innerRightSensorReadout - innerLeftSensorReadout + outerLeftSensorReadout - outerRightSensorReadout ;
+
+  // Case when all sensors are off tape
+  if (innerLeftSensorReadout == 1 && innerRightSensorReadout == 1 && outerLeftSensorReadout == 0 && outerRightSensorReadout == 0) {
+    deviation = (lasterr < 0) ? -5 : 5;
+  }
+
+  error = deviation;
+
+  p = kp * deviation;
+  d = kd * (error - lasterr);
+  g = p + d;
+
+  lasterr = error;
+
+  // Feedback into motor
+  motor.speed(LEFT_MOTOR, (-1 * velocity) - g);
+  motor.speed(RIGHT_MOTOR, (-1 * velocity) + g);
+}
+
+void trackDistance(uint16_t distance) {
+  clearCount();
+  while (getEncoderCount(0) < distance && getEncoderCount(0) < distance) {
+    adjustDirection();
+  }
+  motor.stop(LEFT_MOTOR);
+  motor.stop(RIGHT_MOTOR);
+
+}
+
 bool isOnLine(void) {
   bool result = (analogRead(INNER_RIGHT_SENSOR) > THRESHOLD) || (analogRead(INNER_LEFT_SENSOR) > THRESHOLD) || (analogRead(OUTER_LEFT_SENSOR) > THRESHOLD) || (analogRead(OUTER_RIGHT_SENSOR) > THRESHOLD);
   return result;
@@ -79,6 +115,38 @@ void straightScan(void) {
 
   }
   return;
+}
+
+void rightScan(void) {
+  motor.speed(LEFT_MOTOR, -100);
+  motor.speed(RIGHT_MOTOR, 0);
+
+  while (true) {
+    if (isOnLine()) {
+      delay(30);
+      if (isOnLine()) {
+        break;
+      }
+    }
+  }
+  motor.speed(LEFT_MOTOR, 0);
+  motor.speed(RIGHT_MOTOR, 0);
+}
+
+void LeftScan(void) {
+  motor.speed(LEFT_MOTOR, 0);
+  motor.speed(RIGHT_MOTOR, -100);
+
+  while (true) {
+    if (isOnLine()) {
+      delay(30);
+      if (isOnLine()) {
+        break;
+      }
+    }
+  }
+  motor.speed(LEFT_MOTOR, 0);
+  motor.speed(RIGHT_MOTOR, 0);
 }
 
 void reverseRoutine(void) {

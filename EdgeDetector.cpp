@@ -1,7 +1,7 @@
 #include "EdgeDetector.h"
 
 constexpr uint16_t THRESHOLD = 400;
-constexpr uint16_t DEBOUNCE_DELAY_MS = 20;
+constexpr uint16_t DEBOUNCE_DELAY_MS = 10;
 
 bool isLeftAtEdge(void) {
   return (analogRead(LEFT_EDGE_SENSOR) >= THRESHOLD);
