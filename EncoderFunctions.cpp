@@ -63,7 +63,7 @@ void moveStraight(int velocity, int dir, int distance) {
   motor.speed(LEFT_MOTOR, 0);
 }
 
-void moveStraightUntilEdge(int velocity) {
+void moveStraightUntilEdge(int velocity, int threshold) {
   clearCount();
   int error = 0;
   int rightCount;
@@ -78,7 +78,7 @@ void moveStraightUntilEdge(int velocity) {
     motor.speed(RIGHT_MOTOR, (-1 * velocity) + error);
     motor.speed(LEFT_MOTOR, (-1 * velocity) - error);
     
-  } while (!isAtEdge());
+  } while (!isAtEdge(threshold));
   motor.speed(RIGHT_MOTOR, 100);
   motor.speed(LEFT_MOTOR, 100);
   

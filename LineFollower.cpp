@@ -190,8 +190,8 @@ void lowerRoutine(void) {
 }
 
 void bounce(void) {
-  motor.speed(RIGHT_MOTOR, 100);
-  motor.speed(LEFT_MOTOR, 100);
+  motor.speed(RIGHT_MOTOR, 150);
+  motor.speed(LEFT_MOTOR, 150);
   delay(100);
   motor.speed(RIGHT_MOTOR, 0);
   motor.speed(LEFT_MOTOR, 0);

@@ -20,8 +20,8 @@ constexpr uint16_t CLOSED_RIGHT_CLAW_SERVO_ANGLE =      112;
 constexpr uint16_t OPEN_RIGHT_CLAW_SERVO_ANGLE =        13;
 
 // servo angles for bridge drops
-constexpr uint16_t DEFAULT_LEFT_BRIDGE_SERVO_ANGLE =    85;
-constexpr uint16_t DEFAULT_RIGHT_BRIDGE_SERVO_ANGLE =   90;
+constexpr uint16_t DEFAULT_LEFT_BRIDGE_SERVO_ANGLE =    0;
+constexpr uint16_t DEFAULT_RIGHT_BRIDGE_SERVO_ANGLE =   180;
 constexpr uint16_t BRIDGE1_LEFT_BRIDGE_SERVO_ANGLE =    0;
 constexpr uint16_t BRIDGE1_RIGHT_BRIDGE_SERVO_ANGLE =   180;
 constexpr uint16_t BRIDGE2_LEFT_BRIDGE_SERVO_ANGLE =    85;
@@ -90,6 +90,14 @@ void initializeLeftClaw(void) {
   delay(MOVEMENT_DELAY_MS);
   leftClaw.write(OPEN_LEFT_CLAW_SERVO_ANGLE);
 }
+void initializeLeftClaw2(void) {
+  leftArm.attach(LEFT_ARM_SERVO);
+  leftClaw.attach(LEFT_CLAW_SERVO);
+  
+  leftClaw.write(OPEN_LEFT_CLAW_SERVO_ANGLE);
+  delay(1000);
+  leftArm.write(LOWERED_LEFT_ARM_SERVO_ANGLE);
+}
 
 void pickUpRightSide(void) {
   
@@ -98,8 +106,8 @@ void pickUpRightSide(void) {
     delay(11);
   }
   
-  rightClaw.write(CLOSED_RIGHT_CLAW_SERVO_ANGLE);
-  delay(MOVEMENT_DELAY_MS);
+//  rightClaw.write(CLOSED_RIGHT_CLAW_SERVO_ANGLE);
+//  delay(MOVEMENT_DELAY_MS);
   rightArm.write(RAISED_RIGHT_ARM_SERVO_ANGLE);
   delay(MOVEMENT_DELAY_MS);
   rightClaw.write(OPEN_RIGHT_CLAW_SERVO_ANGLE);
@@ -117,7 +125,7 @@ void pickUpLeftSide(void) {
   
   for (int i = OPEN_LEFT_CLAW_SERVO_ANGLE; i > CLOSED_LEFT_CLAW_SERVO_ANGLE; i--) {
     leftClaw.write(i);
-    delay(10);
+    delay(11);
   }
   
   leftArm.write(RAISED_LEFT_ARM_SERVO_ANGLE);
@@ -161,11 +169,17 @@ void dropFirstBridge(void) {
 }
 
 void dropSecondBridge(void) {
-  moveStraight(100, -1,100);
+  moveStraight(100, -1,120);
+  leftBridge.attach(LEFT_BRIDGE_SERVO);
+  rightBridge.attach(RIGHT_BRIDGE_SERVO);
+  
   leftBridge.write(BRIDGE2_LEFT_BRIDGE_SERVO_ANGLE);
   rightBridge.write(BRIDGE2_RIGHT_BRIDGE_SERVO_ANGLE);
   delay(2000);
+
+  leftBridge.detach();
+  rightBridge.detach();
   
-  moveStraight(100, 1, 1000);
+  moveStraight(100, 1, 560);
 }
 
