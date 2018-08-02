@@ -23,7 +23,6 @@ void setup() {
 void loop() {
 
   // first section until bridge
-//  trackDistance(1300);
   trackDistance(300);
   initializeRightClaw();
   trackDistance(1000);
@@ -40,50 +39,51 @@ void loop() {
   rightScan();
   initializeRightClaw2();
   trackDistance(340);
-//  moveStraight(100, 1, 15);
-//  rotateLMotorAngle(110, 1, 10);
+
   pickUpRightSide();
-//  moveStraight(100, -1, 50);
-//  rotateRMotorAngle(120, -1, 20);
-//  moveStraight(100, 1, 100);
-//  LeftScan();
+  moveStraight(100, -1, 120);
+  delay(200);
+  rotateRMotorAngle(120, -1, 27);
+  delay(200);
+  moveStraight(100, 1, 240);
+  LeftScan();
   
 
-//  // IR detection block
-//  if (detect_10khz(0) > 250) {
-//    while (true) {
-//      delay(500);
-//      if (detect_1khz(0) > 250) {
-//        break;
-//      }
-//    }
-//    while (true) {
-//      delay(500);
-//      if (detect_10khz(0) > 250) {
-//        break;
-//      }
-//    }
-//  } else if (detect_1khz(0) > 250) {
-//    while (true) {
-//      delay(500);
-//      if (detect_10khz(0) > 250) {
-//        break;
-//      }
-//    }
-//  }
-//  
-//  trackDistance(1350);
-//  initializeLeftClaw();
-//  while (true) {
-//    adjustDirection();
-//    if (isAtEdge()) {
-//      stopMotors;
-//      bounce();
-//      break;
-//    }
-//  }
-//  moveStraight(100, -1, 75);
-//  pickUpLeftSide();
+  // IR detection block
+  if (detect_10khz(0) > 250) {
+    while (true) {
+      delay(500);
+      if (detect_1khz(0) > 250) {
+        break;
+      }
+    }
+    while (true) {
+      delay(500);
+      if (detect_10khz(0) > 250) {
+        break;
+      }
+    }
+  } else if (detect_1khz(0) > 250) {
+    while (true) {
+      delay(500);
+      if (detect_10khz(0) > 250) {
+        break;
+      }
+    }
+  }
+  
+  trackDistance(1250);
+  initializeLeftClaw();
+  while (true) {
+    adjustDirection();
+    if (isAtEdge()) {
+      stopMotors;
+      bounce();
+      break;
+    }
+  }
+  moveStraight(100, -1, 75);
+  pickUpLeftSide();
 //  rotateRMotorAngle(120, -1, 60);
 //  moveStraightUntilEdge(100);
 //  dropSecondBridge();

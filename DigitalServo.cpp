@@ -52,23 +52,40 @@ void initializeServos(void) {
   rightClaw.write(DEFAULT_RIGHT_CLAW_SERVO_ANGLE);
   leftBridge.write(DEFAULT_LEFT_BRIDGE_SERVO_ANGLE);
   rightBridge.write(DEFAULT_RIGHT_BRIDGE_SERVO_ANGLE);
+
   delay(MOVEMENT_DELAY_MS);
+  
+  leftArm.detach();
+  leftClaw.detach();
+  rightArm.detach();
+  rightClaw.detach();
+  leftBridge.detach();
+  rightBridge.detach();
 }
 
 // initialization routines setting up claw to pick up objects
 void initializeRightClaw(void) {
+  rightArm.attach(RIGHT_ARM_SERVO);
+  rightClaw.attach(RIGHT_CLAW_SERVO);
+  
   rightArm.write(LOWERED_RIGHT_ARM_SERVO_ANGLE);
   delay(MOVEMENT_DELAY_MS);
   rightClaw.write(OPEN_RIGHT_CLAW_SERVO_ANGLE);
 }
 
 void initializeRightClaw2(void) {
+  rightArm.attach(RIGHT_ARM_SERVO);
+  rightClaw.attach(RIGHT_CLAW_SERVO);
+  
   rightArm.write(LOWERED_RIGHT_ARM_SERVO_ANGLE);
   delay(MOVEMENT_DELAY_MS);
   rightClaw.write(10);
 }
 
 void initializeLeftClaw(void) {
+  leftArm.attach(LEFT_ARM_SERVO);
+  leftClaw.attach(LEFT_CLAW_SERVO);
+  
   leftArm.write(LOWERED_LEFT_ARM_SERVO_ANGLE);
   delay(MOVEMENT_DELAY_MS);
   leftClaw.write(OPEN_LEFT_CLAW_SERVO_ANGLE);
@@ -91,6 +108,9 @@ void pickUpRightSide(void) {
   rightClaw.write(DEFAULT_RIGHT_CLAW_SERVO_ANGLE);
   rightArm.write(DEFAULT_RIGHT_ARM_SERVO_ANGLE);
   delay(MOVEMENT_DELAY_MS);
+
+  rightArm.detach();
+  rightClaw.detach();
 }
 
 void pickUpLeftSide(void) {
@@ -108,6 +128,9 @@ void pickUpLeftSide(void) {
   leftClaw.write(DEFAULT_LEFT_CLAW_SERVO_ANGLE);
   leftArm.write(DEFAULT_LEFT_ARM_SERVO_ANGLE);
   delay(MOVEMENT_DELAY_MS);
+
+  leftArm.detach();
+  leftClaw.detach();
 }
 //
 //void routine(void) {
@@ -121,6 +144,8 @@ void pickUpLeftSide(void) {
 
 // bridge routines
 void dropFirstBridge(void) {
+  leftBridge.attach(LEFT_BRIDGE_SERVO);
+  rightBridge.attach(RIGHT_BRIDGE_SERVO);
 
   rotateLMotorAngle(110, -1, 32);
   moveStraight(100, -1, 30);
@@ -131,6 +156,8 @@ void dropFirstBridge(void) {
   delay(1300);
 
   moveStraight(100, 1, 450);
+  leftBridge.detach();
+  rightBridge.detach();
 }
 
 void dropSecondBridge(void) {
