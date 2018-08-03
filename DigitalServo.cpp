@@ -20,8 +20,8 @@ constexpr uint16_t CLOSED_RIGHT_CLAW_SERVO_ANGLE =      112;
 constexpr uint16_t OPEN_RIGHT_CLAW_SERVO_ANGLE =        13;
 
 // servo angles for bridge drops
-constexpr uint16_t DEFAULT_LEFT_BRIDGE_SERVO_ANGLE =    0;
-constexpr uint16_t DEFAULT_RIGHT_BRIDGE_SERVO_ANGLE =   180;
+constexpr uint16_t DEFAULT_LEFT_BRIDGE_SERVO_ANGLE =    85;
+constexpr uint16_t DEFAULT_RIGHT_BRIDGE_SERVO_ANGLE =   90;
 constexpr uint16_t BRIDGE1_LEFT_BRIDGE_SERVO_ANGLE =    0;
 constexpr uint16_t BRIDGE1_RIGHT_BRIDGE_SERVO_ANGLE =   180;
 constexpr uint16_t BRIDGE2_LEFT_BRIDGE_SERVO_ANGLE =    85;
