@@ -10,10 +10,10 @@
 
 void setup() {
   LCD.begin(16, 2);
-//  while (true) {
-//    testSensors();
-//    delay(400);
-//  }
+  while (true) {
+    testSensors();
+    delay(400);
+  }
 
   enableEncoderInterrupts();
   //  displayMenu();
@@ -112,14 +112,29 @@ void loop() {
 
   // pick up last ewok
   turnRightUntilEdge(90, 200);
-  moveStraight(100, -1, 100);
+  moveStraight(100, -1, 140);
   initializeLeftClaw2();
   delay(1000);
   pickUpLeftSide();
 
   // getting accross bridge
   rotateLMotorAngle(110, -1, 10);
-  crossBridge(80, 200);
+  crossBridge(80, 1500, 200);
+  rotateLMotorAngle(110, 1, 32);
+  initializeLeftClaw3();
+  initializeRightClaw();
+  pickUpLeftSide();
+  initializeLeftClaw2();
+  moveStraight(100, -1, 70);
+
+  motor.speed(LIFT_MOTOR, -255);
+  delay(3000);
+  moveStraight(100, 1, 30);
+  motor.speed(LIFT_MOTOR, 255);
+  delay(3000);
+  motor.speed(LIFT_MOTOR, 0);
+  moveStraight(100, -1, 100);
+   
   
   while (true) {
     delay(10000);

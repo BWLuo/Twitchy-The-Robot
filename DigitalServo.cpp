@@ -98,6 +98,14 @@ void initializeLeftClaw2(void) {
   delay(1000);
   leftArm.write(LOWERED_LEFT_ARM_SERVO_ANGLE);
 }
+void initializeLeftClaw3(void) {
+  leftArm.attach(LEFT_ARM_SERVO);
+  leftClaw.attach(LEFT_CLAW_SERVO);
+  
+  leftClaw.write(OPEN_LEFT_CLAW_SERVO_ANGLE);
+  delay(1000);
+  leftArm.write(160);
+}
 
 void pickUpRightSide(void) {
   

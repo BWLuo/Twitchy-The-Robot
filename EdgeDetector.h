@@ -11,7 +11,7 @@ bool isAtEdge(uint16_t threshold);
 
 void turnRightUntilEdge(uint8_t turnSpeed, uint16_t threshold);
 void turnRightUntilEdge(uint8_t turnSpeed, uint16_t threshold);
-void crossBridge(uint8_t velocty, uint16_t threshold);
+void crossBridge(uint8_t velocty, uint16_t distance, uint16_t threshold);
 
 
 #endif

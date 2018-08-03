@@ -14,6 +14,7 @@ void pickUpRightSide2(void);
 
 void initializeLeftClaw(void);
 void initializeLeftClaw2(void);
+void initializeLeftClaw3(void);
 void pickUpLeftSide(void);
 
 void dropFirstBridge(void);

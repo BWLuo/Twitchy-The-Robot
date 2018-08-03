@@ -70,9 +70,9 @@ void turnUntilNotEdge(uint8_t turnSpeed, uint16_t threshold) {
   motor.stop(LEFT_MOTOR);
 }
 
-void crossBridge(uint8_t velocity, uint16_t threshold) {
-  while(true) {
-    moveStraightUntilEdge2(velocity, threshold);
+void crossBridge(uint8_t velocity, uint16_t distance, uint16_t threshold) {
+  while(getLeftDistance() < distance && getRightDistance() < distance) {
+    moveStraightUntilEdge2(velocity, distance - getLeftDistance(), threshold);
     turnUntilNotEdge(110, threshold);
   }
 }
