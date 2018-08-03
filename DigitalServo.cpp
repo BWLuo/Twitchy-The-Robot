@@ -106,8 +106,6 @@ void pickUpRightSide(void) {
     delay(11);
   }
   
-//  rightClaw.write(CLOSED_RIGHT_CLAW_SERVO_ANGLE);
-//  delay(MOVEMENT_DELAY_MS);
   rightArm.write(RAISED_RIGHT_ARM_SERVO_ANGLE);
   delay(MOVEMENT_DELAY_MS);
   rightClaw.write(OPEN_RIGHT_CLAW_SERVO_ANGLE);

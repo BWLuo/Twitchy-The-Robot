@@ -11,7 +11,7 @@
 void setup() {
   LCD.begin(16, 2);
 //  while (true) {
-//    testIRSensor();
+//    testSensors();
 //    delay(400);
 //  }
 
@@ -37,11 +37,13 @@ void loop() {
     }
   }
 
+  // find line again and start picking up second ewok
   rightScan();
   initializeRightClaw2();
   trackDistance(340);
-
   pickUpRightSide();
+
+  // adjust to move into position for IR detection
   moveStraight(100, -1, 140);
   delay(200);
   rotateRMotorAngle(120, -1, 27);
@@ -49,8 +51,8 @@ void loop() {
   moveStraight(100, 1, 240);
   LeftScan();
 
+  // IR detection block
   while (true) {
-    // IR detection block
     if (detect_10khz(0) > 50) {
       while (true) {
         delay(500);
@@ -76,6 +78,7 @@ void loop() {
     }
   }
 
+  // wait before starting next claw
   trackDistance(1250);
   initializeLeftClaw();
 
@@ -87,8 +90,12 @@ void loop() {
       break;
     }
   }
+
+  // adjustment for picking up third ewok
   moveStraight(100, -1, 75);
   pickUpLeftSide();
+
+  // alignment for bridge deployment
   moveStraightUntilEdge(80, 300);
   delay(200);
   rotateRMotorAngle(110, -1, 70);
@@ -103,39 +110,18 @@ void loop() {
   bounce();
   dropSecondBridge();
 
-  //  initializeLeftClaw();
+  // pick up last ewok
   turnRightUntilEdge(90, 200);
   moveStraight(100, -1, 100);
   initializeLeftClaw2();
   delay(1000);
   pickUpLeftSide();
-  //  rotateRMotorAngle(120, -1, 60);
 
-
-  //  moveStraightUntilEdge(100, 300);
-  //  bounce();
-  //  dropSecondBridge();
-
-
-
-
-
-  //
-  //  reverseRoutine();
-  //  unsigned long lowerTimer = millis() + 5000;
-  //  startLift();
-  //  delay(2000);
-  //  do {
-  //    adjustDirection();
-  //  } while( millis() < lowerTimer);
-  //
-  //  stopMotors();
-  //  lowerRoutine();
-  //
+  // getting accross bridge
+  rotateLMotorAngle(110, -1, 10);
+  crossBridge(80, 200);
+  
   while (true) {
     delay(10000);
   }
-
-  //testSensors();
-  //delay(500);
 }

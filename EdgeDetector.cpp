@@ -21,6 +21,19 @@ bool isAtEdge(uint16_t threshold) {
   return false;
 }
 
+void turnLeftUntilEdge(uint8_t turnSpeed, uint16_t threshold) {
+  motor.speed(RIGHT_MOTOR, -1 * turnSpeed);
+  motor.speed(LEFT_MOTOR, 0);
+  while (true) {
+    if(isRightAtEdge(threshold)) {
+      break;
+    }
+  }
+  motor.speed(RIGHT_MOTOR, turnSpeed + 50);
+  delay(100);
+  motor.stop(RIGHT_MOTOR);
+} 
+
 void turnRightUntilEdge(uint8_t turnSpeed, uint16_t threshold) {
   motor.speed(RIGHT_MOTOR, 0);
   motor.speed(LEFT_MOTOR, -1 * turnSpeed);
@@ -34,3 +47,44 @@ void turnRightUntilEdge(uint8_t turnSpeed, uint16_t threshold) {
   motor.stop(LEFT_MOTOR);
 }
 
+void turnUntilNotEdge(uint8_t turnSpeed, uint16_t threshold) {
+  if(isLeftAtEdge(threshold)) {
+    motor.speed(RIGHT_MOTOR, 0);
+    motor.speed(LEFT_MOTOR, -1 * turnSpeed);
+    while(true) {
+      if(!isLeftAtEdge(threshold)) {
+        break;
+      }
+    }
+  } else if (isRightAtEdge(threshold)) {
+    motor.speed(LEFT_MOTOR, 0);
+    motor.speed(RIGHT_MOTOR, -1 * turnSpeed);
+    while(true) {
+      if(!isRightAtEdge(threshold)) {
+        break;
+      }
+    }
+  }
+
+  motor.stop(RIGHT_MOTOR);
+  motor.stop(LEFT_MOTOR);
+}
+
+void crossBridge(uint8_t velocity, uint16_t threshold) {
+  while(true) {
+    moveStraightUntilEdge2(velocity, threshold);
+    turnUntilNotEdge(110, threshold);
+  }
+}
+
+//void crossBridge(uint8_t velocity, uint16_t threshold) {
+//  while(true) {
+//    moveStraightUntilEdge2(velocity, threshold);
+//    if(isLeftAtEdge(threshold)) {
+//      rotateLMotorAngle(110, 1, 10);
+//    } else if (isRightAtEdge(threshold)){
+//      rotateRMotorAngle(110, 1, 10);
+//    }
+//    
+//  }
+//}
