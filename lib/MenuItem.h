@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
+
 class MenuItem {
 
   public:
@@ -18,4 +19,3 @@ class MenuItem {
     uint16_t _address;
 };
 #endif
-

@@ -1,199 +1,97 @@
 #include "LineFollower.h"
 
-constexpr int THRESHOLD = 250;
+int16_t kp = 0;
+int16_t kd = 0;
 
-volatile int innerLeftSensorReadout = 0;
-volatile int outerLeftSensorReadout = 0;
-volatile int innerRightSensorReadout = 0;
-volatile int outerRightSensorReadout = 0;
-
-int kp = 0;
-int kd = 0;
-int leftMotorSpeed = 0;
-int rightMotorSpeed = 0;
-
-volatile int p = 0;
-volatile int d = 0;
-volatile int g = 0;
-
-volatile int deviation = 0;
-volatile int error = 0;
-volatile int lasterr = 0;
-
-
+volatile int prevDeviation = 0;
 
 void initializeMotors(void) {
-  kp = -1 * getMenuItemValue(0);
-  kd = -1 * getMenuItemValue(1);
-  leftMotorSpeed = -1 * getMenuItemValue(2);
-  rightMotorSpeed = -1 * getMenuItemValue(2);
+  kp = getMenuItemValue(0);
+  kd = getMenuItemValue(1);
 }
 
-void stopMotors(void) {
-  motor.speed(LEFT_MOTOR, 0);
-  motor.speed(RIGHT_MOTOR, 0);
+bool isOnLine(uint16_t threshold) {
+  return (analogRead(INNER_RIGHT_SENSOR) > threshold) || (analogRead(INNER_LEFT_SENSOR) > threshold) || (analogRead(OUTER_LEFT_SENSOR) > threshold) || (analogRead(OUTER_RIGHT_SENSOR) > threshold);
 }
 
-void adjustDirection(void) {
-  innerLeftSensorReadout = (analogRead(INNER_LEFT_SENSOR) > THRESHOLD) ? 0 : 1;
-  innerRightSensorReadout = (analogRead(INNER_RIGHT_SENSOR) > THRESHOLD) ? 0 : 1;
-  outerLeftSensorReadout = (analogRead(OUTER_LEFT_SENSOR) < THRESHOLD) ? 0 : 3;
-  outerRightSensorReadout = (analogRead(OUTER_RIGHT_SENSOR) < THRESHOLD) ? 0 : 3;
+bool isOnLineDebounce(uint16_t threshold) {
+  if (isOnLine(threshold)) {
+    delay(DEBOUNCE_DELAY_MS);
+    if (isOnLine(threshold)) {
+      return true;
+    }
+  } else {
+    return false;
+  }
+}
 
-  deviation = innerRightSensorReadout - innerLeftSensorReadout + outerLeftSensorReadout - outerRightSensorReadout ;
+void adjustDirection(uint8_t velocity, uint16_t threshold) {
+  int innerLeftSensor = (analogRead(INNER_LEFT_SENSOR) > threshold) ? 0 : 1;
+  int innerRightSensor = (analogRead(INNER_RIGHT_SENSOR) > threshold) ? 0 : 1;
+  int outerLeftSensor = (analogRead(OUTER_LEFT_SENSOR) > threshold) ? 3 : 0;
+  int outerRightSensor = (analogRead(OUTER_RIGHT_SENSOR) > threshold) ? 3 : 0;
+
+  int deviation = innerRightSensor + outerRightSensor - innerLeftSensor - outerLeftSensor;
 
   // Case when all sensors are off tape
-  if (innerLeftSensorReadout == 1 && innerRightSensorReadout == 1 && outerLeftSensorReadout == 0 && outerRightSensorReadout == 0) {
-    deviation = (lasterr < 0) ? -5 : 5;
+  if (innerLeftSensor == 1 && innerRightSensor == 1 && outerLeftSensor == 0 && outerRightSensor == 0) {
+    deviation = (prevDeviation < 0) ? -5 : 5;
   }
 
-  error = deviation;
+  int proportionalError = kp * deviation;
+  int derivativeError = kd * (deviation - prevDeviation);
+  int totalError = proportionalError + derivativeError;
 
-  p = kp * deviation;
-  d = kd * (error - lasterr);
-  g = p + d;
-
-  lasterr = error;
-
-  // Feedback into motor
-  motor.speed(LEFT_MOTOR, leftMotorSpeed - g);
-  motor.speed(RIGHT_MOTOR, rightMotorSpeed + g);
+  motor.speed(LEFT_MOTOR, (LEFT_MOTOR_FORWARD * velocity) - totalError);
+  motor.speed(RIGHT_MOTOR, (RIGHT_MOTOR_FORWARD * velocity) + totalError);
+  prevDeviation = deviation;
 }
 
-void adjustDirection2(uint8_t velocity) {
-  innerLeftSensorReadout = (analogRead(INNER_LEFT_SENSOR) > THRESHOLD) ? 0 : 1;
-  innerRightSensorReadout = (analogRead(INNER_RIGHT_SENSOR) > THRESHOLD) ? 0 : 1;
-  outerLeftSensorReadout = (analogRead(OUTER_LEFT_SENSOR) < THRESHOLD) ? 0 : 3;
-  outerRightSensorReadout = (analogRead(OUTER_RIGHT_SENSOR) < THRESHOLD) ? 0 : 3;
 
-  deviation = innerRightSensorReadout - innerLeftSensorReadout + outerLeftSensorReadout - outerRightSensorReadout ;
-
-  // Case when all sensors are off tape
-  if (innerLeftSensorReadout == 1 && innerRightSensorReadout == 1 && outerLeftSensorReadout == 0 && outerRightSensorReadout == 0) {
-    deviation = (lasterr < 0) ? -5 : 5;
-  }
-
-  error = deviation;
-
-  p = kp * deviation;
-  d = kd * (error - lasterr);
-  g = p + d;
-
-  lasterr = error;
-
-  // Feedback into motor
-  motor.speed(LEFT_MOTOR, (-1 * velocity) - g);
-  motor.speed(RIGHT_MOTOR, (-1 * velocity) + g);
-}
-
-void trackDistance(uint16_t distance) {
-  clearCount();
-  while (getEncoderCount(0) < distance && getEncoderCount(0) < distance) {
-    adjustDirection();
+void adjustDirectionUntilDistance(uint16_t distance, uint8_t velocity, uint16_t threshold) {
+  clearAllEncoderCount();
+  while (getRightEncoderValue() < distance && getLeftEncoderValue() < distance) {
+    adjustDirection(velocity, threshold);
   }
   motor.stop(LEFT_MOTOR);
   motor.stop(RIGHT_MOTOR);
-
 }
 
-bool isOnLine(void) {
-  bool result = (analogRead(INNER_RIGHT_SENSOR) > THRESHOLD) || (analogRead(INNER_LEFT_SENSOR) > THRESHOLD) || (analogRead(OUTER_LEFT_SENSOR) > THRESHOLD) || (analogRead(OUTER_RIGHT_SENSOR) > THRESHOLD);
-  return result;
-}
 
-void straightScan(void) {
-  motor.speed(LEFT_MOTOR, leftMotorSpeed);
-  motor.speed(RIGHT_MOTOR, rightMotorSpeed);
-
+void moveStraightLineScan(uint8_t velocity, uint16_t threshold) {
+  motor.speed(LEFT_MOTOR, LEFT_MOTOR_FORWARD * velocity);
+  motor.speed(RIGHT_MOTOR, RIGHT_MOTOR_FORWARD * velocity);
   while (true) {
-    if (isOnLine()) {
-      delay(30);
-      if (isOnLine()) {
-        break;
-      }
-    }
-
-  }
-  return;
-}
-
-void rightScan(void) {
-  motor.speed(LEFT_MOTOR, -100);
-  motor.speed(RIGHT_MOTOR, 0);
-
-  while (true) {
-    if (isOnLine()) {
-      delay(30);
-      if (isOnLine()) {
-        break;
-      }
-    }
-  }
-  motor.speed(LEFT_MOTOR, 0);
-  motor.speed(RIGHT_MOTOR, 0);
-}
-
-void LeftScan(void) {
-  motor.speed(LEFT_MOTOR, 0);
-  motor.speed(RIGHT_MOTOR, -100);
-
-  while (true) {
-    if (isOnLine()) {
-      delay(30);
-      if (isOnLine()) {
-        break;
-      }
-    }
-  }
-  motor.speed(LEFT_MOTOR, 0);
-  motor.speed(RIGHT_MOTOR, 0);
-}
-
-void reverseRoutine(void) {
-  motor.speed(RIGHT_MOTOR, 100);
-  motor.speed(LEFT_MOTOR, 100);
-  delay(1000);
-  stopMotors();
-  delay(500);
-  motor.speed(RIGHT_MOTOR, 100);
-  motor.speed(LEFT_MOTOR, -100);
-  delay(500);
-  while (true) {
-    if (isOnLine()) {
-      stopMotors();
+    if (isOnLineDebounce(threshold)) {
       break;
     }
   }
+  motor.stop(LEFT_MOTOR);
+  motor.stop(RIGHT_MOTOR);
 }
 
-void startLift(void) {
-  motor.speed(LIFT_MOTOR, -255);
+
+void turnRightLineScan(uint8_t turnSpeed, uint16_t threshold) {
+  motor.stop(RIGHT_MOTOR);
+  motor.speed(LEFT_MOTOR, LEFT_MOTOR_FORWARD * turnSpeed);
+  while (true) {
+    if (isOnLineDebounce(threshold)) {
+      break;
+    }
+  }
+  motor.stop(LEFT_MOTOR);
+  motor.stop(RIGHT_MOTOR);
 }
 
-void lowerRoutine(void) {
-  motor.speed(RIGHT_MOTOR, 0);
-  motor.speed(LEFT_MOTOR, -200);
-  delay(1000);
-  motor.speed(LEFT_MOTOR, 0);
 
-  motor.speed(2, 255);
-  delay(1000);
-  motor.speed(LEFT_MOTOR, 80);
-  motor.speed(RIGHT_MOTOR, 80);
-  delay(2000);
-  motor.speed(2, 0);
-  delay(1000);
-  stopMotors();
-  motor.speed(LEFT_MOTOR, 100);
-  delay(1500);
-
+void turnLeftLineScan(uint8_t turnSpeed, uint16_t threshold) {
+  motor.stop(LEFT_MOTOR);
+  motor.speed(RIGHT_MOTOR, RIGHT_MOTOR_FORWARD * turnSpeed);
+  while (true) {
+    if (isOnLineDebounce(threshold)) {
+      break;
+    }
+  }
+  motor.stop(LEFT_MOTOR);
+  motor.stop(RIGHT_MOTOR);
 }
-
-void bounce(void) {
-  motor.speed(RIGHT_MOTOR, 150);
-  motor.speed(LEFT_MOTOR, 150);
-  delay(100);
-  motor.speed(RIGHT_MOTOR, 0);
-  motor.speed(LEFT_MOTOR, 0);
-}
-

@@ -17,7 +17,6 @@ int itemCount = 3;
 volatile int menuIndex = 0;
 
 
-
 uint8_t getMenuItemValue(uint8_t index) {
   return items[index].getValue();
 }

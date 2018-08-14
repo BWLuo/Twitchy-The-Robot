@@ -23,6 +23,3 @@ void testEncoders(void) {
   LCD.setCursor(0,1);
   LCD.print(getEncoderCount(1));
 }
-
-
-
