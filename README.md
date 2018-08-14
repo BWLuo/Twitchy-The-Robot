@@ -1,6 +1,8 @@
 # Twitchy-The-Robot
 Code for Robot 
+
 Author: Bo Wen Luo 
+
 Special thanks to Amar Shah for providing the filter and encoder interrupt library files
 
 # Getting Started 
